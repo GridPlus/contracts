@@ -11,7 +11,6 @@ contract TokenChannels {
     address sender;
     address recipient;
     address token;
-    uint timeout;
     uint deposit;
   }
   mapping (address => uint) balances;
@@ -30,20 +29,18 @@ contract TokenChannels {
 	 * address token    Address of token contract
 	 * address to       Address of recipient
    * uint amount      Number of token quanta to send
-	 * uint timeout     Number of seconds for which the channel will be open
 	 */
-	function OpenChannel(address token, address to, uint amount, uint timeout) payable {
+	function OpenChannel(address token, address to, uint amount) {
     // Sanity checks
     if (amount == 0) { throw; }
     if (to == msg.sender) { throw; }
     if (active_ids[msg.sender][to] != bytes32(0)) { throw; }
 
     // Create a channel
-    bytes32 id = sha3(msg.sender, to, now+timeout);
+    bytes32 id = sha3(msg.sender, to, now);
 
     // Initialize the channel
     Channel memory _channel;
-		_channel.timeout = now+timeout;
     _channel.deposit = amount;
     _channel.sender = msg.sender;
     _channel.recipient = to;
@@ -104,28 +101,6 @@ contract TokenChannels {
 
 	}
 
-	/**
-	 * Delete an expired channel and refund the deposit to the sender.
-   * May be called by anyone.
-	 *
-	 * bytes32 id    Identitifier in "channels" mapping
-	 */
-	function ChannelTimeout(bytes32 id){
-    Channel memory _channel;
-    _channel = channels[id];
-
-    // Make sure it's not already closed and is actually expired
-    ERC20 t = ERC20(_channel.token);
-    if (_channel.deposit == 0) { throw; }
-    else if (_channel.timeout > now) { throw; }
-    else if (!t.transfer(_channel.sender, _channel.deposit)) { throw; }
-
-    // Close the channel
-    delete channels[id];
-    delete active_ids[_channel.sender][_channel.recipient];
-	}
-
-
   //============================================================================
   // CONSTANT FUNCTIONS
   //============================================================================
@@ -163,10 +138,6 @@ contract TokenChannels {
 
   function GetChannelId(address from, address to) public constant returns (bytes32) {
     return active_ids[from][to];
-  }
-
-  function GetTimeout(bytes32 id) public constant returns (uint) {
-    return channels[id].timeout;
   }
 
   function GetDeposit(bytes32 id) public constant returns (uint) {
