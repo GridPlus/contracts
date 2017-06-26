@@ -9,8 +9,8 @@ on this registry.
 The owner also claims ownership of this new wallet key by querying the agent over
 a local area network.
 
-## USDX.sol
-A standard ERC20 token that is used to pay bills. This will be backed by USD.
+## BOLT.sol
+A standard ERC621 token (extension of ERC20 + increaseSupply/decreaseSupply functionality). This will be a stable coin on the Grid+ platform.
 
-## ERC20.sol
-A representation of the ERC20 standard used as a base class for all tokens.
+## TokenChannels.sol
+A minimally viable implementation of payment channels. More functionality will be added before taking this to production (especially dispute resolution).
