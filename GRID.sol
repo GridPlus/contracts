@@ -2,7 +2,7 @@ pragma solidity ^0.4.8;
 
 import "./ERC621.sol";
 
-contract BOLT is ERC621 {
+contract GRID is ERC621 {
 
   mapping (address => bool) admins;  // Mapping of who is an admin
 
@@ -19,7 +19,7 @@ contract BOLT is ERC621 {
   string public symbol;
   string public version;
 
-  function BOLT( uint _supply, string _name, uint8 _decimals, string _symbol, string _version ) {
+  function GRID( uint _supply, string _name, uint8 _decimals, string _symbol, string _version ) {
     balances[msg.sender] = _supply;
     supply = _supply;
     name = _name;
@@ -74,16 +74,18 @@ contract BOLT is ERC621 {
     admins[old_admin] = false;
   }
 
-  function increaseSupply(uint value, address to) onlyAdmins() returns (bool) {
+  function increaseSupply(uint value, address to) onlyAdmins() returns(bool) {
     supply = safeAdd(supply, value);
     balances[to] = safeAdd(balances[to], value);
     Transfer(0, to, value);
+    return true;
   }
 
-  function decreaseSupply(uint value, address from) onlyAdmins() returns (bool) {
+  function decreaseSupply(uint value, address from) onlyAdmins() returns(bool) {
     balances[from] = safeSub(balances[from], value);
     supply = safeSub(supply, value);
     Transfer(from, 0, value);
+    return true;
   }
 
 

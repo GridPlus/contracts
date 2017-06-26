@@ -1,6 +1,6 @@
 pragma solidity ^0.4.8;
 
-contract ERC20 {
+contract ERC621 {
 
     // Events
     event Transfer(address indexed from, address indexed to, uint value);
@@ -15,5 +15,9 @@ contract ERC20 {
     function transfer( address to, uint value) returns (bool ok);
     function transferFrom( address from, address to, uint value) returns (bool ok);
     function approve(address spender, uint value) returns (bool ok);
+
+    // Admin only functions
+    function increaseSupply(uint value, address to) returns (bool ok);
+    function decreaseSupply(uint value, address from) returns (bool ok);
 
 }

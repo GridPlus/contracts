@@ -24,12 +24,11 @@ contract Registry {
 	// This must be called before a agent is turned online.
 	// The serial hash is a keccak_256 hash of the serial number.
 	function register(address agent, bytes32 serial_hash) isAdmin() returns (bool) {
-		/*if (registry[serial_hash] != address(0)) { throw; }*/
+		if (registry[serial_hash] != address(0)) { throw; }
 		registry[serial_hash] = agent;
 		/*Register(serial_hash, now);*/
 		return true;
 	}
-
 
 	// SETTERS
 	// =========================
@@ -93,6 +92,12 @@ contract Registry {
 		return registry[serial_hash];
 	}
 
+	// Check if an address is the admin
+	function checkAdmin(address addr) public constant returns (bool) {
+		if (admin == addr) { return true; }
+		else { return false; }
+	}
+
 
 	// MODIFIERS
 	// ==========================
@@ -100,4 +105,6 @@ contract Registry {
 		if (msg.sender != admin) { throw; }
 		_;
 	}
+
+	function() { throw; }
 }

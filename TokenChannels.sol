@@ -156,5 +156,6 @@ contract TokenChannels {
     return channels[id].token;
   }
 
+  function() { throw; }
 
 }
